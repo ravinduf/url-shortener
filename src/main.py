@@ -51,13 +51,7 @@ def forward_to_target_url(
         db: Session = Depends(get_db)
     ):
 
-    db_url = (
-        db.query(models.URL)
-            .filter(models.URL.key == url_key, models.URL.is_active)
-            .first()
-    )
-
-    if db_url:
+    if db_url := crud.get_db_url_by_key(db = db, url_key = url_key):
         return RedirectResponse(db_url.target_url)
     else:
         raise_not_found(request)
